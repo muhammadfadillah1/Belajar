@@ -33,7 +33,8 @@
   });
 
   /* ---------------- Router ---------------- */
-  const routes = { beranda: renderHome, siklus: renderSiklus, peralatan: renderPeralatan, unit: renderUnit, sop: renderSop, kuis: renderKuis };
+  const routes = { beranda: renderHome, siklus: renderSiklus, peralatan: renderPeralatan, unit: renderUnit, sop: renderSop, kuis: renderKuis, dcs: renderDcs };
+  function renderDcs(param) { window.DCS.renderLab(app, param, (fn) => { cleanup = fn; }); }
   let cleanup = null;
 
   function router() {
@@ -59,7 +60,7 @@
         </div>
         <div class="stat-row">
           <div class="stat"><b>${PERALATAN.length}</b><span class="muted">peralatan</span></div>
-          <div class="stat"><b>${SOAL.length + PERALATAN.length * 3}+</b><span class="muted">soal kuis</span></div>
+          <div class="stat"><b>${SOAL.length + SOAL_DCS.length + PERALATAN.length * 3 + KAMUS_DCS.length}+</b><span class="muted">soal kuis</span></div>
           <div class="stat"><b>${SOP.length}</b><span class="muted">ringkasan SOP</span></div>
           ${best ? `<div class="stat"><b>${best}%</b><span class="muted">skor terbaik lo</span></div>` : ""}
         </div>
@@ -71,6 +72,7 @@
         ${feature("#/peralatan", "🧰", "Slide Peralatan", "Fungsi, cara kerja, parameter yang dipantau, serta gangguan umum & penanganannya.")}
         ${feature("#/unit", "⚖️", "Unit 150 vs 380 MW", "Beda tekanan, aliran uap, konfigurasi BFP, pendinginan generator, dan fokus operasinya.")}
         ${feature("#/sop", "📋", "SOP Umum", "Start-up, shutdown, MFT, blackout, tube leak, vakum turun, turbine trip.")}
+        ${feature("#/dcs", "🖥️", "DCS Lab (Turbin 150 MW)", "Simulator gangguan ala layar DCS, peta layar, dan kamus istilah 中文 → Indonesia dari DCS unit lo.")}
         ${feature("#/kuis", "🧠", "Kuis", "Fungsi alat, troubleshooting, siklus, unit, dan SOP. Ada pembahasan tiap soal.")}
       </div>
 
@@ -204,6 +206,10 @@
         </div>
       </div>
 
+      <h2 style="margin-top:28px">Ekstraksi, drain & bocoran uap — unit 150 MW lo</h2>
+      <p class="muted">Disusun dari layar DCS 抽汽系统, 疏水排放系统, dan 轴封/门杆漏汽系统. Nyalakan/matikan layer pakai tombol di bawah.</p>
+      <div class="card" id="d150"></div>
+
       <h2 style="margin-top:28px">Siklus pendukung</h2>
       <div class="grid grid-2">
         ${SIKLUS_LAIN.map((s) => `<div class="card"><h3>${esc(s.judul)}</h3><ol class="flow-list">${s.langkah.map((l) => `<li>${esc(l)}</li>`).join("")}</ol></div>`).join("")}
@@ -225,6 +231,7 @@
       if (i >= 0) show(i);
     }));
     $("#steps").addEventListener("click", (e) => { const b = e.target.closest(".step-btn"); if (b) show(+b.dataset.i); });
+    window.DCS.mountDiagram150($("#d150"));
     $("#prevStep").onclick = () => show(idx - 1);
     $("#nextStep").onclick = () => show(idx + 1);
     show(idx);
@@ -379,6 +386,7 @@
     { id: "siklus", nama: "Siklus" },
     { id: "unit", nama: "Unit 150 vs 380" },
     { id: "sop", nama: "SOP & keselamatan" },
+    { id: "dcs", nama: "Istilah & layar DCS" },
   ];
 
   function buildAutoQuestions() {
@@ -393,6 +401,13 @@
       const g = a.gangguan[Math.floor(Math.random() * a.gangguan.length)];
       const wrong = shuffle(PERALATAN.filter((b) => b.id !== a.id).flatMap((b) => b.gangguan.map((x) => x.tindakan))).slice(0, 3);
       qs.push(mk("gangguan", `Pada ${a.nama} terjadi "${g.masalah}". Tindakan yang paling tepat?`, g.tindakan, wrong, `Penyebab umum: ${g.penyebab}.`));
+    });
+    // Istilah DCS: 中文 → arti
+    shuffle(KAMUS_DCS).slice(0, 30).forEach((t) => {
+      const lain = KAMUS_DCS.filter((x) => x.cn !== t.cn);
+      const sama = shuffle(lain.filter((x) => x.g === t.g));
+      const salah = [...sama, ...shuffle(lain)].map((x) => x.arti).filter((a, i, arr) => a !== t.arti && arr.indexOf(a) === i).slice(0, 3);
+      qs.push(mk("dcs", `Di layar DCS, istilah "${t.cn}" artinya…`, t.arti, salah, `${t.cn} = ${t.arti}.`));
     });
     return qs;
   }
@@ -427,7 +442,7 @@
       </div>`;
 
     function pool() {
-      const all = [...SOAL.map(prepManual), ...buildAutoQuestions()];
+      const all = [...SOAL.map(prepManual), ...SOAL_DCS.map(prepManual), ...buildAutoQuestions()];
       return all.filter((s) => pilihKat.includes(s.k));
     }
     function refresh() {
