@@ -12,6 +12,12 @@
   --water: #1c7ed6;
   --cool: #0ca678;
   --ext: #7950f2;
+  --coal: #5c3d2e;
+  --air: #4dabf7;
+  --gas: #868e96;
+  --ash: #a0826d;
+  --oil: #e8a400;
+  --ret: #f76707;
   --drain: #d9480f;
   --leak: #d6336c;
   --ok: #2b8a3e;
@@ -24,6 +30,7 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
+    --coal: #c49a7a; --air: #74c0fc; --gas: #adb5bd; --ash: #c8ad96; --oil: #ffd43b; --ret: #ff922b;
     --ext: #b197fc; --drain: #ff922b; --leak: #f783ac;
     --bg: #0f1115; --surface: #171a20; --surface-2: #1f232b; --text: #e8eaee; --muted: #9aa3b2;
     --border: #2a2f39; --accent: #ff8a3d; --accent-soft: #2b1d14; --steam: #ff6b6b; --reheat: #ffa94d;
@@ -32,6 +39,7 @@
   }
 }
 :root[data-theme="dark"] {
+    --coal: #c49a7a; --air: #74c0fc; --gas: #adb5bd; --ash: #c8ad96; --oil: #ffd43b; --ret: #ff922b;
     --ext: #b197fc; --drain: #ff922b; --leak: #f783ac;
   --bg: #0f1115; --surface: #171a20; --surface-2: #1f232b; --text: #e8eaee; --muted: #9aa3b2;
   --border: #2a2f39; --accent: #ff8a3d; --accent-soft: #2b1d14; --steam: #ff6b6b; --reheat: #ffa94d;
@@ -303,3 +311,11 @@ select.input { max-width: 100%; }
 .tb-score { font-size: 2.6rem; font-weight: 900; color: #e8590c; } .tb-score small { font-size: 1rem; color: #666; }
 @keyframes blink { 50% { opacity: .45; } }
 @media (prefers-reduced-motion: reduce) { .vbox.warn, .pump.starting .pico, .pump.fault .pico, .dbtn.blink { animation: none; } }
+
+/* Siklus pendukung */
+.pipe.coal { stroke: var(--coal); } .pipe.air { stroke: var(--air); } .pipe.gas { stroke: var(--gas); }
+.pipe.ash { stroke: var(--ash); stroke-dasharray: 4 6; } .pipe.oil { stroke: var(--oil); } .pipe.ret { stroke: var(--ret); stroke-dasharray: 3 6; }
+.legend i.lg-coal { background: var(--coal); } .legend i.lg-air { background: var(--air); } .legend i.lg-gas { background: var(--gas); }
+.legend i.lg-ash { background: var(--ash); } .legend i.lg-oil { background: var(--oil); } .legend i.lg-ret { background: var(--ret); }
+.legend i.lg-cool { background: var(--cool); } .legend i.lg-water { background: var(--water); }
+.diagram text.halo { paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }

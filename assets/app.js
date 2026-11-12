@@ -212,9 +212,8 @@
       <div class="card" id="d150"></div>
 
       <h2 style="margin-top:28px">Siklus pendukung</h2>
-      <div class="grid grid-2">
-        ${SIKLUS_LAIN.map((s) => `<div class="card"><h3>${esc(s.judul)}</h3><ol class="flow-list">${s.langkah.map((l) => `<li>${esc(l)}</li>`).join("")}</ol></div>`).join("")}
-      </div>`;
+      <p class="muted">Pilih siklus, lalu klik langkah atau bagian diagram.</p>
+      <div id="spWrap"></div>`;
 
     function show(i) {
       idx = (i + SIKLUS_AIR_UAP.length) % SIKLUS_AIR_UAP.length;
@@ -233,6 +232,7 @@
     }));
     $("#steps").addEventListener("click", (e) => { const b = e.target.closest(".step-btn"); if (b) show(+b.dataset.i); });
     window.DCS.mountDiagram150($("#d150"));
+    window.SiklusPendukung.mount($("#spWrap"), alatById);
     $("#prevStep").onclick = () => show(idx - 1);
     $("#nextStep").onclick = () => show(idx + 1);
     show(idx);

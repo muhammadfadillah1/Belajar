@@ -585,45 +585,6 @@ const SIKLUS_AIR_UAP = [
   { node: "bfp", judul: "9. BFP & HP Heater", isi: "BFP menaikkan tekanan air melebihi tekanan boiler; HP heater memanaskan lagi dengan uap ekstraksi HP/IP. Air kembali ke economizer — siklus berulang.", alat: ["bfp", "hph"] },
 ];
 
-const SIKLUS_LAIN = [
-  {
-    judul: "Siklus Batubara & Pembakaran",
-    langkah: [
-      "Kapal/tongkang → ship unloader → belt conveyor",
-      "Stockpile (stacker) → reclaimer → crusher",
-      "Tripper → coal bunker",
-      "Coal feeder (atur t/h) → pulverizer (giling & keringkan)",
-      "Serbuk batubara dibawa udara primer → burner → ruang bakar",
-    ],
-  },
-  {
-    judul: "Siklus Udara & Gas Buang",
-    langkah: [
-      "FD fan → APH (udara sekunder dipanaskan) → windbox burner",
-      "PA fan → APH (udara primer panas) + cold PA → mill",
-      "Gas panas hasil pembakaran → SH, RH, economizer",
-      "Gas → APH (melepas panas ke udara) → ESP (tangkap fly ash)",
-      "ID fan → (FGD bila ada) → cerobong",
-    ],
-  },
-  {
-    judul: "Siklus Air Pendingin",
-    langkah: [
-      "Air laut → intake → bar screen & traveling screen",
-      "CW pump → debris filter → tube kondensor",
-      "Air hangat → outfall/seal pit → laut",
-      "Sebagian air laut → desalinasi → demin → makeup siklus",
-    ],
-  },
-  {
-    judul: "Siklus Abu",
-    langkah: [
-      "Bottom ash → submerged scraper conveyor → bunker/truck",
-      "Fly ash di hopper economizer/APH/ESP → pneumatic conveying",
-      "Fly ash silo → truk/pemanfaatan (FABA) atau ash disposal",
-    ],
-  },
-];
 
 /* -------------------------------------------------------------------------
    PERBANDINGAN UNIT 150 MW vs 380 MW (nilai TIPIKAL subkritis)
