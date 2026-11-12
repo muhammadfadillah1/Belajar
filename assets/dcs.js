@@ -159,10 +159,10 @@
         </div>
       </div>
       <div class="chips" style="margin-bottom:16px">
-        <a class="chip ${tab === "sim" ? "on" : ""}" href="#/dcs/sim">🎮 Simulator gangguan</a>
-        <a class="chip ${tab === "layar" ? "on" : ""}" href="#/dcs/layar">🗺️ Peta layar & cara baca</a>
-        <a class="chip ${tab === "kamus" ? "on" : ""}" href="#/dcs/kamus">📖 Kamus istilah</a>
-        <a class="chip" href="#/kuis/dcs">🧠 Kuis DCS</a>
+        <a class="chip ${tab === "sim" ? "on" : ""}" href="#dcs-sim">🎮 Simulator gangguan</a>
+        <a class="chip ${tab === "layar" ? "on" : ""}" href="#dcs-layar">🗺️ Peta layar & cara baca</a>
+        <a class="chip ${tab === "kamus" ? "on" : ""}" href="#dcs-kamus">📖 Kamus istilah</a>
+        <a class="chip" href="#kuis-dcs">🧠 Kuis DCS</a>
       </div>
       <div id="dcsBody"></div>`;
     const body = app.querySelector("#dcsBody");
@@ -629,7 +629,14 @@
     });
     $("#tripBtn").onclick = () => {
       if (s.tripped) return;
-      if (confirm("打闸 — trip turbin secara manual?")) { turbineTrip("手动打闸", "Trip manual operator"); if (!ended) finish(false); draw(); }
+      const b = $("#tripBtn");
+      if (!b.dataset.armed) {
+        b.dataset.armed = "1"; b.innerHTML = L("确认打闸?", "Klik lagi untuk trip");
+        setTimeout(() => { delete b.dataset.armed; b.innerHTML = L("打闸", "Trip manual"); }, 3000);
+        return;
+      }
+      delete b.dataset.armed; b.innerHTML = L("打闸", "Trip manual");
+      turbineTrip("手动打闸", "Trip manual operator"); if (!ended) finish(false); draw();
     };
     $("#scStart").onclick = start;
     $("#scReset").onclick = reset;

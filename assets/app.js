@@ -38,7 +38,8 @@
   let cleanup = null;
 
   function router() {
-    const [, name = "beranda", param] = location.hash.split("/");
+    const m = location.hash.slice(1).match(/^([a-z]+)(?:-(.+))?$/) || [];
+    const name = m[1] || "beranda", param = m[2];
     const fn = routes[name] || renderHome;
     if (cleanup) { cleanup(); cleanup = null; }
     $$("#nav a").forEach((a) => a.classList.toggle("active", a.dataset.route === (routes[name] ? name : "beranda")));
@@ -55,8 +56,8 @@
         <h1>Belajar PLTU dari nol sampai paham gangguan</h1>
         <p>Slide peralatan utama, siklus air-uap, perbandingan unit 150 MW & 380 MW, ringkasan SOP, dan kuis "alat ini fungsinya apa, kalau rusak gimana".</p>
         <div class="row">
-          <a class="btn primary" href="#/peralatan">Mulai dari peralatan →</a>
-          <a class="btn" href="#/kuis">Langsung kuis</a>
+          <a class="btn primary" href="#peralatan">Mulai dari peralatan →</a>
+          <a class="btn" href="#kuis">Langsung kuis</a>
         </div>
         <div class="stat-row">
           <div class="stat"><b>${PERALATAN.length}</b><span class="muted">peralatan</span></div>
@@ -68,12 +69,12 @@
 
       <h2 style="margin-top:28px">Mau belajar apa?</h2>
       <div class="grid grid-3">
-        ${feature("#/siklus", "🔄", "Siklus Utama", "Diagram interaktif aliran air-uap (Rankine + reheat), plus siklus batubara, udara-gas, air pendingin, dan abu.")}
-        ${feature("#/peralatan", "🧰", "Slide Peralatan", "Fungsi, cara kerja, parameter yang dipantau, serta gangguan umum & penanganannya.")}
-        ${feature("#/unit", "⚖️", "Unit 150 vs 380 MW", "Beda tekanan, aliran uap, konfigurasi BFP, pendinginan generator, dan fokus operasinya.")}
-        ${feature("#/sop", "📋", "SOP Umum", "Start-up, shutdown, MFT, blackout, tube leak, vakum turun, turbine trip.")}
-        ${feature("#/dcs", "🖥️", "DCS Lab (Turbin 150 MW)", "Simulator gangguan ala layar DCS, peta layar, dan kamus istilah 中文 → Indonesia dari DCS unit lo.")}
-        ${feature("#/kuis", "🧠", "Kuis", "Fungsi alat, troubleshooting, siklus, unit, dan SOP. Ada pembahasan tiap soal.")}
+        ${feature("#siklus", "🔄", "Siklus Utama", "Diagram interaktif aliran air-uap (Rankine + reheat), plus siklus batubara, udara-gas, air pendingin, dan abu.")}
+        ${feature("#peralatan", "🧰", "Slide Peralatan", "Fungsi, cara kerja, parameter yang dipantau, serta gangguan umum & penanganannya.")}
+        ${feature("#unit", "⚖️", "Unit 150 vs 380 MW", "Beda tekanan, aliran uap, konfigurasi BFP, pendinginan generator, dan fokus operasinya.")}
+        ${feature("#sop", "📋", "SOP Umum", "Start-up, shutdown, MFT, blackout, tube leak, vakum turun, turbine trip.")}
+        ${feature("#dcs", "🖥️", "DCS Lab (Turbin 150 MW)", "Simulator gangguan ala layar DCS, peta layar, dan kamus istilah 中文 → Indonesia dari DCS unit lo.")}
+        ${feature("#kuis", "🧠", "Kuis", "Fungsi alat, troubleshooting, siklus, unit, dan SOP. Ada pembahasan tiap soal.")}
       </div>
 
       <div class="note" style="margin-top:24px">
@@ -224,7 +225,7 @@
         <h3>${esc(s.judul)}</h3>
         <p>${esc(s.isi)}</p>
         <div class="muted" style="font-size:.88rem">Pelajari alatnya:</div>
-        <div class="linklist">${s.alat.map((id) => `<a href="#/peralatan/${id}">${alatById[id].icon} ${esc(alatById[id].nama)}</a>`).join("")}</div>`;
+        <div class="linklist">${s.alat.map((id) => `<a href="#peralatan-${id}">${alatById[id].icon} ${esc(alatById[id].nama)}</a>`).join("")}</div>`;
     }
     $$(".diagram .node").forEach((n) => n.addEventListener("click", () => {
       const i = SIKLUS_AIR_UAP.findIndex((s) => s.node === n.dataset.node);
@@ -309,7 +310,7 @@
       $("#counter").textContent = `${idx + 1}/${list.length}`;
       $("#bar").style.width = `${((idx + 1) / list.length) * 100}%`;
       $$("#thumbs .thumb").forEach((t, j) => t.classList.toggle("on", j === idx));
-      history.replaceState(null, "", `#/peralatan/${a.id}`);
+      history.replaceState(null, "", `#peralatan-${a.id}`);
     }
 
     $("#filters").addEventListener("click", (e) => { const c = e.target.closest(".chip"); if (c) applyFilter(c.dataset.f); });
@@ -360,7 +361,7 @@
       <div class="grid grid-2">
         ${UNIT.fokus.map((f) => `<div class="card"><h3>Unit ${esc(f.unit)}</h3><ul>${f.poin.map((p) => `<li>${esc(p)}</li>`).join("")}</ul></div>`).join("")}
       </div>
-      <div class="row" style="margin-top:20px"><a class="btn primary" href="#/kuis/unit">Kuis seputar unit →</a></div>`;
+      <div class="row" style="margin-top:20px"><a class="btn primary" href="#kuis-unit">Kuis seputar unit →</a></div>`;
   }
 
   /* ---------------- SOP ---------------- */
@@ -376,7 +377,7 @@
           <summary><span class="tag badge-${s.tipe}">${s.tipe === "darurat" ? "Darurat" : "Normal"}</span>${esc(s.judul)}</summary>
           <ol>${s.langkah.map((l) => `<li>${esc(l)}</li>`).join("")}</ol>
         </details>`).join("")}
-      <div class="row" style="margin-top:20px"><a class="btn primary" href="#/kuis/sop">Kuis SOP →</a></div>`;
+      <div class="row" style="margin-top:20px"><a class="btn primary" href="#kuis-sop">Kuis SOP →</a></div>`;
   }
 
   /* ---------------- Kuis ---------------- */
@@ -541,7 +542,7 @@
           <div class="row">
             <button class="btn primary" id="ulang">Kuis lagi</button>
             ${salah.length ? `<button class="btn" id="ulangSalah">Ulangi yang salah (${salah.length})</button>` : ""}
-            <a class="btn" href="#/peralatan">Baca materi</a>
+            <a class="btn" href="#peralatan">Baca materi</a>
           </div>
           ${salah.length ? `<h2 style="margin-top:24px">Pembahasan yang salah</h2>
             ${salah.map(({ q, k }) => `
